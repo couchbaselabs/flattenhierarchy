@@ -61,7 +61,7 @@ def flatten_hierarchy(cb,bucketname,type_col,src_doc_type,num_hier_level,node_id
                 qstr_sel += ' FROM ('+qstr_sel_one+') l'+str(i)
             else:
                 qstr_sel += ' LEFT OUTER JOIN ('+qstr_sel_one
-                qstr_sel += ') l'+str(i)+' ON l'+str(i-1)+'.'+parent_id_col+' = l'+str(i)+'.'+node_id_col
+                qstr_sel += ') l'+str(i)+' ON l'+str(i-1)+'.'+parent_id_col+' = l'+str(i)+'.'+node_id_col+' AND l'+str(i)+'.'+type_col+'="'+src_doc_type+'"'
         qstr_sel += ' WHERE l1.'+type_col+'="'+src_doc_type+'"'
  
 
@@ -69,7 +69,7 @@ def flatten_hierarchy(cb,bucketname,type_col,src_doc_type,num_hier_level,node_id
         try:
             print(qstr_ins+qstr_sel)
             #q = N1QLQuery(qstring)
-            #rows = cb.n1ql_query(qstr_ins+qstr_sel).execute()
+            rows = cb.n1ql_query(qstr_ins+qstr_sel).execute()
         except Exception as e:
             print("query error",e)
         # generate connect by
@@ -86,7 +86,7 @@ def flatten_hierarchy(cb,bucketname,type_col,src_doc_type,num_hier_level,node_id
         qstr_sel += ') ll'
         try:
             print(qstr_ins+qstr_sel)
-            # rows = cb.n1ql_query(qstr_ins+qstr_sel).execute()
+            rows = cb.n1ql_query(qstr_ins+qstr_sel).execute()
         except Exception as e:
             print("query error",e)
 
@@ -95,7 +95,7 @@ def flatten_hierarchy(cb,bucketname,type_col,src_doc_type,num_hier_level,node_id
 
 def main():
 
-    parser = argparse.ArgumentParser(description='python flattenhierarchy')
+    parser = argparse.ArgumentParser(description='python3 flattenhierarchy')
     parser.add_argument("-u", "--user", help="cb user login name", required=True)
     parser.add_argument("-p", "--password", help="cb user login password", required=True)
     parser.add_argument("-i", "--ip", help="IP address of a cb node", required=True)
